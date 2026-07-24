@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "SplitStay — Split expenses with your roommates" },
+      { name: "description", content: "Track shared expenses and settle up with roommates or hostel mates. Simple, mobile-friendly, no login required." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "SplitStay — Split expenses with your roommates" },
+      { property: "og:description", content: "Track shared expenses and settle up with roommates or hostel mates. Simple, mobile-friendly, no login required." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "SplitStay — Split expenses with your roommates" },
+      { name: "twitter:description", content: "Track shared expenses and settle up with roommates or hostel mates. Simple, mobile-friendly, no login required." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/1c935a2f-c808-4e3c-8c79-a0d3153ef14c" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/1c935a2f-c808-4e3c-8c79-a0d3153ef14c" },
     ],
     links: [
       {

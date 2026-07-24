@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Track shared expenses and settle up with the fewest transactions. In ₹, in your browser.",
+          "Track shared expenses and settle up with roommates or hostel mates. Simple, mobile-friendly, no login required.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
