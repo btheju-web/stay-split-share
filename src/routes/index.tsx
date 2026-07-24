@@ -1,24 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useSplitStay } from "@/hooks/use-splitstay";
+import { GroupSetup } from "@/components/splitstay/GroupSetup";
+import { Dashboard } from "@/components/splitstay/Dashboard";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "SplitStay — Split expenses with your roommates" },
+      {
+        name: "description",
+        content:
+          "Track shared expenses and settle up with roommates or hostel mates. Simple, mobile-friendly, no login required.",
+      },
+      { property: "og:title", content: "SplitStay — Split expenses with your roommates" },
+      {
+        property: "og:description",
+        content:
+          "Track shared expenses and settle up with the fewest transactions. In ₹, in your browser.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+  const store = useSplitStay();
+
+  if (!store.hydrated) {
+    return <div className="min-h-screen bg-background" />;
+  }
+
+  if (!store.activeGroup) {
+    return <GroupSetup store={store} />;
+  }
+
+  return <Dashboard store={store} />;
 }
