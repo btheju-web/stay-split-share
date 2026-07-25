@@ -28,6 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ExpenseDialog } from "./ExpenseDialog";
+import { AuthChip } from "./AuthChip";
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 import type { Expense } from "@/lib/splitstay";
 import { computeBalances, formatINR, simplifySettlements } from "@/lib/splitstay";
@@ -99,6 +100,7 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <AuthChip store={store} />
         </div>
       </header>
 
