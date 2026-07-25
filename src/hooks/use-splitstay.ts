@@ -202,8 +202,10 @@ export function useSplitStay() {
   );
 
   const signOut = useCallback(async () => {
+    // Preserve current cloud data locally so guest mode continues where we left off.
+    saveState(state);
     await supabase.auth.signOut();
-  }, []);
+  }, [state]);
 
   return {
     hydrated: hydrated && !authLoading,
