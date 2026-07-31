@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      group_invites: {
+        Row: {
+          created_at: string
+          group_id: string
+          group_name: string
+          id: string
+          owner_id: string
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          group_name: string
+          id?: string
+          owner_id: string
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          group_name?: string
+          id?: string
+          owner_id?: string
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      group_join_requests: {
+        Row: {
+          applied: boolean
+          created_at: string
+          display_name: string
+          id: string
+          invite_id: string
+          updated_at: string
+        }
+        Insert: {
+          applied?: boolean
+          created_at?: string
+          display_name: string
+          id?: string
+          invite_id: string
+          updated_at?: string
+        }
+        Update: {
+          applied?: boolean
+          created_at?: string
+          display_name?: string
+          id?: string
+          invite_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_join_requests_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "group_invites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_data: {
         Row: {
           state: Json
