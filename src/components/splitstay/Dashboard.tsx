@@ -59,7 +59,7 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
   return (
     <div className="min-h-screen pb-28">
       {/* Header */}
-      <header className="border-b bg-card/70 backdrop-blur sticky top-0 z-10">
+      <header className="sticky top-0 z-10 glass-strong rounded-none border-x-0 border-t-0">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
           <div
             className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
@@ -109,11 +109,11 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-8">
         {/* Summary */}
         <section className="grid grid-cols-2 gap-3">
-          <div className="rounded-2xl border bg-card p-4 shadow-[var(--shadow-card)]">
+          <div className="rounded-2xl glass p-4 rounded-2xl">
             <p className="text-xs text-muted-foreground">Total spent</p>
             <p className="text-2xl font-semibold mt-1">{formatINR(totalSpent)}</p>
           </div>
-          <div className="rounded-2xl border bg-card p-4 shadow-[var(--shadow-card)]">
+          <div className="rounded-2xl glass p-4 rounded-2xl">
             <p className="text-xs text-muted-foreground">Members</p>
             <p className="text-2xl font-semibold mt-1">{group.members.length}</p>
           </div>
@@ -169,7 +169,7 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             Settle up
           </h2>
-          <div className="rounded-2xl border bg-card shadow-[var(--shadow-card)]">
+          <div className="rounded-2xl glass rounded-2xl">
             {settlements.length === 0 ? (
               <div className="p-6 text-center text-sm text-muted-foreground">
                 Everyone is settled up 🎉
@@ -194,7 +194,7 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             Expense history
           </h2>
-          <div className="rounded-2xl border bg-card shadow-[var(--shadow-card)] overflow-hidden">
+          <div className="rounded-2xl glass rounded-2xl overflow-hidden">
             {group.expenses.length === 0 ? (
               <div className="p-8 text-center">
                 <p className="text-sm text-muted-foreground">No expenses yet.</p>

@@ -105,9 +105,21 @@
   --gradient-brand: linear-gradient(135deg, oklch(0.62 0.13 195), oklch(0.55 0.19 275));
   --shadow-card: 0 1px 2px oklch(0.22 0.04 255 / 0.04), 0 8px 24px -12px oklch(0.22 0.04 255 / 0.12);
   --shadow-float: 0 10px 30px -8px oklch(0.55 0.19 275 / 0.4);
+
+  /* Liquid glass */
+  --glass-bg: oklch(1 0 0 / 0.55);
+  --glass-bg-strong: oklch(1 0 0 / 0.72);
+  --glass-border: oklch(1 0 0 / 0.65);
+  --glass-shadow: 0 1px 1px oklch(1 0 0 / 0.6) inset, 0 -1px 1px oklch(0.62 0.13 195 / 0.06) inset,
+    0 12px 40px -16px oklch(0.4 0.08 255 / 0.28);
+  --glass-blur: 20px;
 }
 
 .dark {
+  --glass-bg: oklch(0.28 0.04 260 / 0.45);
+  --glass-bg-strong: oklch(0.28 0.04 260 / 0.65);
+  --glass-border: oklch(1 0 0 / 0.14);
+  --glass-shadow: 0 1px 1px oklch(1 0 0 / 0.08) inset, 0 16px 44px -18px oklch(0 0 0 / 0.6);
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
@@ -151,4 +163,31 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+
+  /* Ambient light field behind the glass */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(60rem 40rem at 8% -10%, oklch(0.62 0.13 195 / 0.22), transparent 60%),
+      radial-gradient(50rem 36rem at 100% 0%, oklch(0.55 0.19 275 / 0.2), transparent 60%),
+      radial-gradient(46rem 34rem at 50% 110%, oklch(0.72 0.16 70 / 0.14), transparent 60%);
+  }
+}
+
+@utility glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+@utility glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
