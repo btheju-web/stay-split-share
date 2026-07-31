@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ExpenseDialog } from "./ExpenseDialog";
 import { AuthChip } from "./AuthChip";
+import { InviteDialog } from "./InviteDialog";
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 import type { Expense } from "@/lib/splitstay";
 import { computeBalances, formatINR, simplifySettlements } from "@/lib/splitstay";
