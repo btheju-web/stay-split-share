@@ -48,7 +48,7 @@ export function GroupSetup({ store }: { store: UseSplitStay }) {
           <p className="text-muted-foreground mt-2">Create a group to start splitting expenses with your roommates.</p>
         </div>
 
-        <div className="rounded-2xl border bg-card p-6 shadow-[var(--shadow-card)]">
+        <div className="rounded-2xl glass p-6 rounded-2xl">
           <div className="space-y-2">
             <Label htmlFor="gname">Group name</Label>
             <Input
@@ -110,7 +110,7 @@ export function GroupSetup({ store }: { store: UseSplitStay }) {
         </div>
 
         {store.state.groups.length > 0 && (
-          <div className="mt-6 rounded-2xl border bg-card p-4 shadow-[var(--shadow-card)]">
+          <div className="mt-6 rounded-2xl glass p-4 rounded-2xl">
             <p className="text-sm font-medium mb-2">Your groups</p>
             <div className="space-y-1">
               {store.state.groups.map((g) => (
