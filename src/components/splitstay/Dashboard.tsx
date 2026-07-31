@@ -101,6 +101,7 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <InviteDialog store={store} />
           <AuthChip store={store} />
         </div>
       </header>
