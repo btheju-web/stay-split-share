@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { X, Plus, Users } from "lucide-react";
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 import { AuthChip } from "./AuthChip";
+import { ThemeToggle } from "./ThemeToggle";
+
 
 export function GroupSetup({ store }: { store: UseSplitStay }) {
   const [groupName, setGroupName] = useState("");
@@ -35,9 +37,11 @@ export function GroupSetup({ store }: { store: UseSplitStay }) {
 
   return (
     <div className="min-h-screen flex flex-col px-4 py-6">
-      <div className="w-full max-w-lg mx-auto flex justify-end">
+      <div className="w-full max-w-lg mx-auto flex justify-end items-center gap-1">
+        <ThemeToggle />
         <AuthChip store={store} />
       </div>
+
       <div className="w-full max-w-lg mx-auto flex-1 flex flex-col justify-center py-4">
         <div className="text-center mb-8">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl mb-4"

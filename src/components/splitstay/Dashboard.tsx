@@ -30,6 +30,8 @@ import {
 import { ExpenseDialog } from "./ExpenseDialog";
 import { AuthChip } from "./AuthChip";
 import { InviteDialog } from "./InviteDialog";
+import { ThemeToggle } from "./ThemeToggle";
+
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 import type { Expense } from "@/lib/splitstay";
 import { computeBalances, formatINR, simplifySettlements } from "@/lib/splitstay";
@@ -102,7 +104,9 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
             </DropdownMenuContent>
           </DropdownMenu>
           <InviteDialog store={store} />
+          <ThemeToggle />
           <AuthChip store={store} />
+
         </div>
       </header>
 
