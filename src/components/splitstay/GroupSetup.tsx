@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { X, Plus, Users } from "lucide-react";
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 import { AuthChip } from "./AuthChip";
+import { ThemeToggle } from "./ThemeToggle";
+
 
 export function GroupSetup({ store }: { store: UseSplitStay }) {
   const [groupName, setGroupName] = useState("");
