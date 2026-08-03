@@ -212,22 +212,22 @@
       radial-gradient(50rem 36rem at 100% 0%, var(--ambient-2), transparent 60%),
       radial-gradient(46rem 34rem at 50% 110%, var(--ambient-3), transparent 60%);
   }
-
-  /* Minimalist: flat, opaque, quiet surfaces */
-  .theme-minimal {
-    --glass-bg: var(--card);
-    --glass-bg-strong: var(--card);
-    --glass-border: var(--border);
-    --glass-shadow: var(--shadow-card);
-    --glass-sheen: transparent;
-    --glass-blur: 0px;
-    --gradient-brand: linear-gradient(135deg, var(--primary), var(--primary));
-  }
-
-  .theme-minimal body::before {
-    background: none;
-  }
 }
+
+/* Minimalist: flat, opaque, quiet surfaces (unlayered so it wins over .dark) */
+.theme-minimal {
+  --glass-bg: var(--card);
+  --glass-bg-strong: var(--card);
+  --glass-border: var(--border);
+  --glass-shadow: var(--shadow-card);
+  --glass-sheen: transparent;
+  --glass-blur: 0px;
+  --gradient-brand: linear-gradient(135deg, var(--primary), var(--primary));
+  --ambient-1: transparent;
+  --ambient-2: transparent;
+  --ambient-3: transparent;
+}
+
 
 @utility glass {
   position: relative;
