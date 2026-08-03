@@ -105,11 +105,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const themeBootstrap = `(function(){try{var m=localStorage.getItem('splitstay.theme.mode')||'dark';var s=localStorage.getItem('splitstay.theme.style')||'glass';var r=document.documentElement;if(m==='dark')r.classList.add('dark');r.classList.add(s==='minimal'?'theme-minimal':'theme-glass');r.style.colorScheme=m;}catch(e){document.documentElement.classList.add('dark','theme-glass');}})();`;
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark theme-glass" style={{ colorScheme: "dark" }}>
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>
       <body>
         {children}
@@ -118,6 +121,7 @@ function RootShell({ children }: { children: ReactNode }) {
     </html>
   );
 }
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
