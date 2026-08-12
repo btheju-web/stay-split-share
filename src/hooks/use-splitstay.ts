@@ -234,6 +234,7 @@ export function useSplitStay() {
     deleteGroup,
     addMember,
     removeMember,
+    updateMember,
     addExpense,
     updateExpense,
     deleteExpense,
