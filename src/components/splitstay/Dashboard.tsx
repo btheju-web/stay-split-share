@@ -31,6 +31,8 @@ import { ExpenseDialog } from "./ExpenseDialog";
 import { AuthChip } from "./AuthChip";
 import { InviteDialog } from "./InviteDialog";
 import { ThemeToggle } from "./ThemeToggle";
+import { MembersDialog } from "./MembersDialog";
+import { PayButton } from "./PayButton";
 
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 import type { Expense } from "@/lib/splitstay";
@@ -103,6 +105,7 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <MembersDialog store={store} />
           <InviteDialog store={store} />
           <ThemeToggle />
           <AuthChip store={store} />
@@ -142,7 +145,14 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
                     <div className="h-9 w-9 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-sm font-medium shrink-0">
                       {m.name.charAt(0).toUpperCase()}
                     </div>
-                    <p className="font-medium truncate">{m.name}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{m.name}</p>
+                      {(m.upi || m.phone) && (
+                        <p className="text-xs text-muted-foreground truncate">
+                          {m.upi ?? m.phone}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <div className="text-right">
                     <p
@@ -186,6 +196,11 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">{store.memberName(s.to)}</span>
                     <span className="ml-auto font-semibold">{formatINR(s.amount)}</span>
+                    <PayButton
+                      from={group.members.find((m) => m.id === s.from)}
+                      to={group.members.find((m) => m.id === s.to)}
+                      amount={s.amount}
+                    />
                   </li>
                 ))}
               </ul>
