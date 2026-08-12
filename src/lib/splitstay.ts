@@ -1,4 +1,46 @@
-export type Member = { id: string; name: string };
+export type Member = { id: string; name: string; phone?: string; upi?: string };
+
+export function isValidUpiId(v: string) {
+  return /^[\w.\-]{2,256}@[a-zA-Z]{2,64}$/.test(v.trim());
+}
+
+export function isValidPhone(v: string) {
+  return /^\+?[0-9][0-9\s-]{7,15}$/.test(v.trim());
+}
+
+export function normalizePhone(v: string) {
+  const digits = v.replace(/[^\d]/g, "");
+  if (digits.length === 10) return `91${digits}`;
+  return digits.replace(/^0+/, "");
+}
+
+/** UPI deep link (BHIM/GPay/PhonePe/Paytm all handle upi://pay). */
+export function buildUpiLink(opts: {
+  upi: string;
+  name: string;
+  amount: number;
+  note?: string;
+  app?: "upi" | "gpay" | "phonepe" | "paytm";
+}) {
+  const params = new URLSearchParams({
+    pa: opts.upi.trim(),
+    pn: opts.name,
+    am: opts.amount.toFixed(2),
+    cu: "INR",
+  });
+  if (opts.note) params.set("tn", opts.note.slice(0, 50));
+  const query = params.toString();
+  switch (opts.app) {
+    case "gpay":
+      return `tez://upi/pay?${query}`;
+    case "phonepe":
+      return `phonepe://pay?${query}`;
+    case "paytm":
+      return `paytmmp://pay?${query}`;
+    default:
+      return `upi://pay?${query}`;
+  }
+}
 export type Expense = {
   id: string;
   description: string;
