@@ -137,6 +137,24 @@ export function useSplitStay() {
     }));
   }, []);
 
+  const updateMember = useCallback(
+    (groupId: string, memberId: string, data: Partial<Omit<Member, "id">>) => {
+      setState((s) => ({
+        ...s,
+        groups: s.groups.map((g) =>
+          g.id === groupId
+            ? {
+                ...g,
+                members: g.members.map((m) => (m.id === memberId ? { ...m, ...data } : m)),
+              }
+            : g,
+        ),
+      }));
+    },
+    [],
+  );
+
+
   const addExpense = useCallback(
     (groupId: string, data: Omit<Expense, "id" | "date"> & { date?: string }) => {
       setState((s) => ({
