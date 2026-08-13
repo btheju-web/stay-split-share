@@ -49,11 +49,25 @@ export type Expense = {
   splitBetween: string[]; // member ids
   date: string; // ISO
 };
+/** A recorded settle-up transfer between two members. */
+export type Payment = {
+  id: string;
+  from: string; // member id (payer)
+  to: string; // member id (receiver)
+  amount: number;
+  date: string; // ISO
+  note?: string;
+};
+
 export type Group = {
   id: string;
   name: string;
   members: Member[];
   expenses: Expense[];
+  /** Recorded settle-up payments. */
+  payments: Payment[];
+  /** Monthly spend budget per member id (₹). */
+  budgets: Record<string, number>;
   createdAt: string;
 };
 
@@ -64,12 +78,27 @@ export type State = {
 
 const STORAGE_KEY = "splitstay:v1";
 
+/** Fills in fields added after a user's data was first saved. */
+export function normalizeState(state: State | null | undefined): State {
+  if (!state || !Array.isArray(state.groups)) return { groups: [], activeGroupId: null };
+  return {
+    activeGroupId: state.activeGroupId ?? null,
+    groups: state.groups.map((g) => ({
+      ...g,
+      members: g.members ?? [],
+      expenses: g.expenses ?? [],
+      payments: g.payments ?? [],
+      budgets: g.budgets ?? {},
+    })),
+  };
+}
+
 export function loadState(): State {
   if (typeof window === "undefined") return { groups: [], activeGroupId: null };
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return { groups: [], activeGroupId: null };
-    return JSON.parse(raw) as State;
+    return normalizeState(JSON.parse(raw) as State);
   } catch {
     return { groups: [], activeGroupId: null };
   }
@@ -102,6 +131,11 @@ export function computeBalances(group: Group): Record<string, number> {
     const share = exp.amount / splitters.length;
     if (bal[exp.paidBy] !== undefined) bal[exp.paidBy] += exp.amount;
     for (const s of splitters) bal[s] -= share;
+  }
+  // Recorded settle-up payments move money between members.
+  for (const p of group.payments ?? []) {
+    if (bal[p.from] !== undefined) bal[p.from] += p.amount;
+    if (bal[p.to] !== undefined) bal[p.to] -= p.amount;
   }
   // round to 2 decimals
   Object.keys(bal).forEach((k) => (bal[k] = Math.round(bal[k] * 100) / 100));
