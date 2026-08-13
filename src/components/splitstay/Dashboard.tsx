@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, ArrowRight, Users, ChevronDown, LogOut } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowRight, Users, ChevronDown, LogOut, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -33,6 +33,9 @@ import { InviteDialog } from "./InviteDialog";
 import { ThemeToggle } from "./ThemeToggle";
 import { MembersDialog } from "./MembersDialog";
 import { PayButton } from "./PayButton";
+import { ScanReceiptDialog } from "./ScanReceiptDialog";
+import { Achievements, BudgetDialog } from "./Achievements";
+import { toast } from "sonner";
 
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 import type { Expense } from "@/lib/splitstay";
@@ -105,6 +108,8 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <ScanReceiptDialog store={store} />
+          <BudgetDialog store={store} />
           <MembersDialog store={store} />
           <InviteDialog store={store} />
           <ThemeToggle />
@@ -201,12 +206,32 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
                       to={group.members.find((m) => m.id === s.to)}
                       amount={s.amount}
                     />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Mark as paid"
+                      title="Mark as paid"
+                      onClick={() => {
+                        store.addPayment(group.id, {
+                          from: s.from,
+                          to: s.to,
+                          amount: s.amount,
+                        });
+                        toast.success(
+                          `Payment recorded — ${store.memberName(s.from)} earned points!`,
+                        );
+                      }}
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
                   </li>
                 ))}
               </ul>
             )}
           </div>
         </section>
+
+        <Achievements store={store} balances={balances} />
 
         {/* History */}
         <section>
