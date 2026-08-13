@@ -5,6 +5,7 @@ import {
   type Member,
   type State,
   loadState,
+  normalizeState,
   saveState,
   uid,
 } from "@/lib/splitstay";
@@ -23,7 +24,8 @@ async function loadCloud(userId: string): Promise<State | null> {
     console.error("[splitstay] cloud load failed", error);
     return null;
   }
-  return (data?.state as State | undefined) ?? null;
+  const st = data?.state as State | undefined;
+  return st ? normalizeState(st) : null;
 }
 
 async function saveCloud(userId: string, state: State) {
@@ -310,8 +312,12 @@ export function useSplitStay() {
     removeMember,
     updateMember,
     addExpense,
+    addExpenses,
     updateExpense,
     deleteExpense,
+    addPayment,
+    deletePayment,
+    setBudget,
     memberName,
     user,
     signOut,
