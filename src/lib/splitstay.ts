@@ -78,12 +78,27 @@ export type State = {
 
 const STORAGE_KEY = "splitstay:v1";
 
+/** Fills in fields added after a user's data was first saved. */
+export function normalizeState(state: State | null | undefined): State {
+  if (!state || !Array.isArray(state.groups)) return { groups: [], activeGroupId: null };
+  return {
+    activeGroupId: state.activeGroupId ?? null,
+    groups: state.groups.map((g) => ({
+      ...g,
+      members: g.members ?? [],
+      expenses: g.expenses ?? [],
+      payments: g.payments ?? [],
+      budgets: g.budgets ?? {},
+    })),
+  };
+}
+
 export function loadState(): State {
   if (typeof window === "undefined") return { groups: [], activeGroupId: null };
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return { groups: [], activeGroupId: null };
-    return JSON.parse(raw) as State;
+    return normalizeState(JSON.parse(raw) as State);
   } catch {
     return { groups: [], activeGroupId: null };
   }
