@@ -49,11 +49,25 @@ export type Expense = {
   splitBetween: string[]; // member ids
   date: string; // ISO
 };
+/** A recorded settle-up transfer between two members. */
+export type Payment = {
+  id: string;
+  from: string; // member id (payer)
+  to: string; // member id (receiver)
+  amount: number;
+  date: string; // ISO
+  note?: string;
+};
+
 export type Group = {
   id: string;
   name: string;
   members: Member[];
   expenses: Expense[];
+  /** Recorded settle-up payments. */
+  payments: Payment[];
+  /** Monthly spend budget per member id (₹). */
+  budgets: Record<string, number>;
   createdAt: string;
 };
 
