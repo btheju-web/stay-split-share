@@ -97,6 +97,8 @@ export function useSplitStay() {
         .filter(Boolean)
         .map((n) => ({ id: uid(), name: n })),
       expenses: [],
+      payments: [],
+      budgets: {},
       createdAt: new Date().toISOString(),
     };
     setState((s) => ({ groups: [...s.groups, group], activeGroupId: group.id }));
