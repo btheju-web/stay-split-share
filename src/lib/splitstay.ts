@@ -132,6 +132,11 @@ export function computeBalances(group: Group): Record<string, number> {
     if (bal[exp.paidBy] !== undefined) bal[exp.paidBy] += exp.amount;
     for (const s of splitters) bal[s] -= share;
   }
+  // Recorded settle-up payments move money between members.
+  for (const p of group.payments ?? []) {
+    if (bal[p.from] !== undefined) bal[p.from] += p.amount;
+    if (bal[p.to] !== undefined) bal[p.to] -= p.amount;
+  }
   // round to 2 decimals
   Object.keys(bal).forEach((k) => (bal[k] = Math.round(bal[k] * 100) / 100));
   return bal;
