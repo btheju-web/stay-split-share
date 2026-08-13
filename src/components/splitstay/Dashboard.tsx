@@ -231,6 +231,32 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
           </div>
         </section>
 
+        {group.payments.length > 0 && (
+          <section>
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Recorded payments
+            </h2>
+            <ul className="rounded-2xl glass divide-y">
+              {group.payments.slice(0, 5).map((p) => (
+                <li key={p.id} className="flex items-center gap-3 px-4 py-3 text-sm">
+                  <span className="font-medium">{store.memberName(p.from)}</span>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium">{store.memberName(p.to)}</span>
+                  <span className="ml-auto font-semibold">{formatINR(p.amount)}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Undo payment"
+                    onClick={() => store.deletePayment(group.id, p.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <Achievements store={store} balances={balances} />
 
         {/* History */}
