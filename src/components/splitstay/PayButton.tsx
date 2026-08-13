@@ -54,6 +54,16 @@ export function PayButton({ from, to, amount }: Props) {
         <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
           Pay {to.name} {formatINR(amount)}
         </DropdownMenuLabel>
+        <div className="px-2 pb-2" onKeyDown={(e) => e.stopPropagation()}>
+          <Input
+            value={userNote}
+            onChange={(e) => setUserNote(e.target.value)}
+            placeholder="Note (optional)"
+            maxLength={40}
+            className="h-8 text-xs"
+          />
+        </div>
+        <DropdownMenuSeparator />
         {to.upi ? (
           <>
             <DropdownMenuItem onClick={() => openUpi("upi")}>Any UPI app</DropdownMenuItem>
@@ -63,14 +73,17 @@ export function PayButton({ from, to, amount }: Props) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                void navigator.clipboard.writeText(to.upi!);
-                toast.success("UPI ID copied");
+                void navigator.clipboard.writeText(
+                  `${to.upi} · ${formatINR(amount)} · ${note}`,
+                );
+                toast.success("Payment details copied");
               }}
             >
               <Copy className="h-4 w-4" /> Copy UPI ID
             </DropdownMenuItem>
           </>
         ) : (
+
           <DropdownMenuItem disabled>No UPI ID saved</DropdownMenuItem>
         )}
         {to.phone && (
