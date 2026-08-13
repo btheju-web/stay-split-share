@@ -210,6 +210,78 @@ export function useSplitStay() {
     }));
   }, []);
 
+  /** Add several expenses at once (used by the receipt scanner). */
+  const addExpenses = useCallback(
+    (groupId: string, items: (Omit<Expense, "id" | "date"> & { date?: string })[]) => {
+      setState((s) => ({
+        ...s,
+        groups: s.groups.map((g) =>
+          g.id === groupId
+            ? {
+                ...g,
+                expenses: [
+                  ...items.map((data) => ({
+                    id: uid(),
+                    date: data.date ?? new Date().toISOString(),
+                    description: data.description,
+                    amount: data.amount,
+                    paidBy: data.paidBy,
+                    splitBetween: data.splitBetween,
+                  })),
+                  ...g.expenses,
+                ],
+              }
+            : g,
+        ),
+      }));
+    },
+    [],
+  );
+
+  const addPayment = useCallback(
+    (groupId: string, data: { from: string; to: string; amount: number; note?: string }) => {
+      setState((s) => ({
+        ...s,
+        groups: s.groups.map((g) =>
+          g.id === groupId
+            ? {
+                ...g,
+                payments: [
+                  { id: uid(), date: new Date().toISOString(), ...data },
+                  ...(g.payments ?? []),
+                ],
+              }
+            : g,
+        ),
+      }));
+    },
+    [],
+  );
+
+  const deletePayment = useCallback((groupId: string, paymentId: string) => {
+    setState((s) => ({
+      ...s,
+      groups: s.groups.map((g) =>
+        g.id === groupId
+          ? { ...g, payments: (g.payments ?? []).filter((p) => p.id !== paymentId) }
+          : g,
+      ),
+    }));
+  }, []);
+
+  const setBudget = useCallback((groupId: string, memberId: string, amount: number | null) => {
+    setState((s) => ({
+      ...s,
+      groups: s.groups.map((g) => {
+        if (g.id !== groupId) return g;
+        const budgets = { ...(g.budgets ?? {}) };
+        if (amount == null || !(amount > 0)) delete budgets[memberId];
+        else budgets[memberId] = amount;
+        return { ...g, budgets };
+      }),
+    }));
+  }, []);
+
   const activeGroup: Group | null =
     state.groups.find((g) => g.id === state.activeGroupId) ?? null;
 
