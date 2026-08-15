@@ -19,11 +19,16 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: typeof search['redirect'] === "string" ? (search['redirect'] as string) : undefined,
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { redirect } = Route.useSearch();
+  const target = redirect && redirect.startsWith("/") ? redirect : "/";
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,13 +36,13 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/" });
+      if (data.session) navigate({ to: target });
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      if (s) navigate({ to: "/" });
+      if (s) navigate({ to: target });
     });
     return () => sub.subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, target]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
