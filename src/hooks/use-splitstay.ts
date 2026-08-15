@@ -11,6 +11,12 @@ import {
 } from "@/lib/splitstay";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  fetchSharedGroups,
+  mergeShared,
+  publishGroup,
+  saveSharedGroup,
+} from "@/lib/shared-groups";
 
 const EMPTY: State = { groups: [], activeGroupId: null };
 
