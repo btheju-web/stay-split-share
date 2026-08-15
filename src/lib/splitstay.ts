@@ -69,6 +69,10 @@ export type Group = {
   /** Monthly spend budget per member id (₹). */
   budgets: Record<string, number>;
   createdAt: string;
+  /** Set when the group is shared across accounts (equals the shared group id). */
+  sharedId?: string;
+  /** Account that owns the shared group. */
+  ownerId?: string;
 };
 
 export type State = {
