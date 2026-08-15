@@ -75,7 +75,14 @@ export function Dashboard({ store }: { store: UseSplitStay }) {
             <Users className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-muted-foreground">SplitStay</p>
+            <p className="text-xs text-muted-foreground">
+              SplitStay
+              {group.sharedId && (
+                <span className="ml-2 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium text-secondary-foreground">
+                  Shared
+                </span>
+              )}
+            </p>
             <h1 className="text-lg font-semibold truncate">{group.name}</h1>
           </div>
 
