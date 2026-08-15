@@ -47,6 +47,7 @@ export function useSplitStay() {
   const [hydrated, setHydrated] = useState(false);
   const modeRef = useRef<"guest" | "cloud" | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sharedSigs = useRef<Map<string, string>>(new Map());
 
   // Load state whenever auth changes.
   useEffect(() => {
