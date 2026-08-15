@@ -11,6 +11,12 @@ import {
 } from "@/lib/splitstay";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  fetchSharedGroups,
+  mergeShared,
+  publishGroup,
+  saveSharedGroup,
+} from "@/lib/shared-groups";
 
 const EMPTY: State = { groups: [], activeGroupId: null };
 
@@ -41,6 +47,7 @@ export function useSplitStay() {
   const [hydrated, setHydrated] = useState(false);
   const modeRef = useRef<"guest" | "cloud" | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sharedSigs = useRef<Map<string, string>>(new Map());
 
   // Load state whenever auth changes.
   useEffect(() => {
@@ -51,18 +58,27 @@ export function useSplitStay() {
       if (user) {
         const cloud = await loadCloud(user.id);
         if (cancelled) return;
+        let next: State;
         if (cloud && (cloud.groups?.length ?? 0) > 0) {
-          setState(cloud);
+          next = cloud;
         } else {
           // First sign-in: promote any guest data to cloud.
           const local = loadState();
           if ((local.groups?.length ?? 0) > 0) {
             await saveCloud(user.id, local);
-            setState(local);
+            next = local;
           } else {
-            setState(cloud ?? EMPTY);
+            next = cloud ?? EMPTY;
           }
         }
+        // Pull in groups shared with this account.
+        const rows = await fetchSharedGroups();
+        if (cancelled) return;
+        const groups = mergeShared(next.groups, rows);
+        const activeGroupId = groups.some((g) => g.id === next.activeGroupId)
+          ? next.activeGroupId
+          : (groups[0]?.id ?? null);
+        setState({ groups, activeGroupId });
         modeRef.current = "cloud";
       } else {
         setState(loadState());
@@ -86,9 +102,63 @@ export function useSplitStay() {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => {
         void saveCloud(user.id, state);
+        for (const g of state.groups) {
+          if (!g.sharedId) continue;
+          const sig = JSON.stringify([g.name, g.members, g.expenses, g.payments, g.budgets]);
+          if (sharedSigs.current.get(g.sharedId) === sig) continue;
+          sharedSigs.current.set(g.sharedId, sig);
+          void saveSharedGroup(g);
+        }
       }, 400);
     }
   }, [state, hydrated, user]);
+
+  // Pick up other members' changes to shared groups.
+  useEffect(() => {
+    if (!user || !hydrated) return;
+    const pull = async () => {
+      const rows = await fetchSharedGroups();
+      if (!rows.length) return;
+      setState((s) => {
+        const groups = mergeShared(s.groups, rows);
+        for (const g of groups) {
+          if (g.sharedId) {
+            sharedSigs.current.set(
+              g.sharedId,
+              JSON.stringify([g.name, g.members, g.expenses, g.payments, g.budgets]),
+            );
+          }
+        }
+        const activeGroupId = groups.some((g) => g.id === s.activeGroupId)
+          ? s.activeGroupId
+          : (groups[0]?.id ?? null);
+        return { groups, activeGroupId };
+      });
+    };
+    const interval = setInterval(() => void pull(), 10000);
+    return () => clearInterval(interval);
+  }, [user, hydrated]);
+
+  /** Moves a local group into the shared database so other accounts can join it. */
+  const shareGroup = useCallback(
+    async (groupId: string) => {
+      if (!user) return null;
+      const group = state.groups.find((g) => g.id === groupId);
+      if (!group) return null;
+      if (group.sharedId) return group.sharedId;
+      const displayName = user.email?.split("@")[0] ?? "Owner";
+      const sharedId = await publishGroup(user.id, group, displayName);
+      if (!sharedId) return null;
+      setState((s) => ({
+        groups: s.groups.map((g) =>
+          g.id === groupId ? { ...g, id: sharedId, sharedId, ownerId: user.id } : g,
+        ),
+        activeGroupId: s.activeGroupId === groupId ? sharedId : s.activeGroupId,
+      }));
+      return sharedId;
+    },
+    [user, state.groups],
+  );
 
   const createGroup = useCallback((name: string, memberNames: string[]) => {
     const group: Group = {
@@ -319,6 +389,7 @@ export function useSplitStay() {
     deletePayment,
     setBudget,
     memberName,
+    shareGroup,
     user,
     signOut,
     isCloud: modeRef.current === "cloud",
