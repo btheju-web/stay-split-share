@@ -118,6 +118,31 @@ export const acceptEmailInvite = createServerFn({ method: "POST" })
       .update({ accepted_at: new Date().toISOString() })
       .eq("id", invite.id);
 
+    // Make sure the joiner also shows up as a person expenses can be split with.
+    const { data: row } = await supabaseAdmin
+      .from("shared_groups")
+      .select("state")
+      .eq("id", invite.group_id)
+      .maybeSingle();
+    const state = (row?.state ?? {}) as { members?: { id: string; name: string }[] };
+    const members = state.members ?? [];
+    if (!members.some((m) => m.name.trim().toLowerCase() === displayName.toLowerCase())) {
+      await supabaseAdmin
+        .from("shared_groups")
+        .update({
+          state: {
+            ...state,
+            members: [
+              ...members,
+              { id: Math.random().toString(36).slice(2, 10), name: displayName },
+            ],
+          },
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", invite.group_id);
+    }
+
+
     const group = invite.shared_groups as { name: string } | null;
     return { ok: true as const, groupName: group?.name ?? "the group", displayName };
   });
