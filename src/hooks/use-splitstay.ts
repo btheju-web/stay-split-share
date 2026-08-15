@@ -389,6 +389,7 @@ export function useSplitStay() {
     deletePayment,
     setBudget,
     memberName,
+    shareGroup,
     user,
     signOut,
     isCloud: modeRef.current === "cloud",
