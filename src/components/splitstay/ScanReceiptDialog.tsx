@@ -227,15 +227,11 @@ export function ScanReceiptDialog({ store }: { store: UseSplitStay }) {
                         )
                       }
                     />
-                    <Input
+                    <MoneyInput
                       className="w-24"
-                      type="number"
-                      inputMode="decimal"
                       value={r.amount}
-                      onChange={(e) =>
-                        setRows((rs) =>
-                          rs.map((x, xi) => (xi === i ? { ...x, amount: e.target.value } : x)),
-                        )
+                      onValueChange={(v) =>
+                        setRows((rs) => rs.map((x, xi) => (xi === i ? { ...x, amount: v } : x)))
                       }
                     />
                     <Button
