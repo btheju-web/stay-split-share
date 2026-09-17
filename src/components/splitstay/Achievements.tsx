@@ -9,12 +9,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Badge as UIBadge } from "@/components/ui/badge";
 import { computeScores } from "@/lib/gamification";
-import { formatINR } from "@/lib/splitstay";
+import { formatINR, parseMoney } from "@/lib/splitstay";
+import { MoneyInput } from "@/components/ui/money-input";
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 
 export function BudgetDialog({ store }: { store: UseSplitStay }) {
@@ -36,7 +37,7 @@ export function BudgetDialog({ store }: { store: UseSplitStay }) {
 
   const save = () => {
     group.members.forEach((m) => {
-      const v = parseFloat(draft[m.id] ?? "");
+      const v = parseMoney(draft[m.id] ?? "");
       store.setBudget(group.id, m.id, Number.isFinite(v) && v > 0 ? v : null);
     });
     setOpen(false);
@@ -61,13 +62,11 @@ export function BudgetDialog({ store }: { store: UseSplitStay }) {
           {group.members.map((m) => (
             <div key={m.id} className="space-y-1.5">
               <Label htmlFor={`b-${m.id}`}>{m.name}</Label>
-              <Input
+              <MoneyInput
                 id={`b-${m.id}`}
-                type="number"
-                inputMode="decimal"
                 placeholder="No budget"
                 value={draft[m.id] ?? ""}
-                onChange={(e) => setDraft((d) => ({ ...d, [m.id]: e.target.value }))}
+                onValueChange={(v) => setDraft((d) => ({ ...d, [m.id]: v }))}
               />
             </div>
           ))}

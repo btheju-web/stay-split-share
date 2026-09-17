@@ -22,7 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { scanReceipt } from "@/lib/receipt.functions";
-import { formatINR } from "@/lib/splitstay";
+import { formatINR, parseMoney } from "@/lib/splitstay";
+import { MoneyInput } from "@/components/ui/money-input";
 import type { UseSplitStay } from "@/hooks/use-splitstay";
 
 type Row = { id: string; name: string; amount: string; split: string[] };
@@ -91,11 +92,11 @@ export function ScanReceiptDialog({ store }: { store: UseSplitStay }) {
     }
   };
 
-  const total = rows.reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
+  const total = rows.reduce((s, r) => s + (parseMoney(r.amount) || 0), 0);
   const valid =
     rows.length > 0 &&
     paidBy &&
-    rows.every((r) => r.name.trim() && parseFloat(r.amount) > 0 && r.split.length > 0);
+    rows.every((r) => r.name.trim() && parseMoney(r.amount) > 0 && r.split.length > 0);
 
   const save = () => {
     if (!valid) return;
@@ -103,7 +104,7 @@ export function ScanReceiptDialog({ store }: { store: UseSplitStay }) {
       group.id,
       rows.map((r) => ({
         description: merchant.trim() ? `${merchant.trim()} · ${r.name.trim()}` : r.name.trim(),
-        amount: parseFloat(r.amount),
+        amount: parseMoney(r.amount),
         paidBy,
         splitBetween: r.split,
         date: new Date(date).toISOString(),
@@ -227,15 +228,11 @@ export function ScanReceiptDialog({ store }: { store: UseSplitStay }) {
                         )
                       }
                     />
-                    <Input
+                    <MoneyInput
                       className="w-24"
-                      type="number"
-                      inputMode="decimal"
                       value={r.amount}
-                      onChange={(e) =>
-                        setRows((rs) =>
-                          rs.map((x, xi) => (xi === i ? { ...x, amount: e.target.value } : x)),
-                        )
+                      onValueChange={(v) =>
+                        setRows((rs) => rs.map((x, xi) => (xi === i ? { ...x, amount: v } : x)))
                       }
                     />
                     <Button

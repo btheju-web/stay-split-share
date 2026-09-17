@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -94,11 +94,8 @@ function AuthPage() {
             {mode === "signin" ? "Sign in to SplitStay" : "Create your SplitStay account"}
           </h1>
           <p className="text-muted-foreground mt-2 text-sm">
-            Sync your groups across devices. Or{" "}
-            <Link to="/" className="underline underline-offset-2">
-              continue as guest
-            </Link>
-            .
+            Sign in to create groups, add expenses and keep everything synced across your
+            devices.
           </p>
         </div>
 
