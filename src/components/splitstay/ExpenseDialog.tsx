@@ -17,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Expense, Group } from "@/lib/splitstay";
+import { MoneyInput } from "@/components/ui/money-input";
+import { parseMoney, type Expense, type Group } from "@/lib/splitstay";
 
 type Props = {
   open: boolean;
@@ -57,13 +58,15 @@ export function ExpenseDialog({ open, onOpenChange, group, editing, onSubmit }: 
     }
   }, [open, editing, group.members]);
 
-  const amt = parseFloat(amount);
+  const amt = parseMoney(amount);
+  const memberIds = group.members.map((m) => m.id);
+  const selected = splitBetween.filter((id) => memberIds.includes(id));
   const valid =
     description.trim().length > 0 &&
-    !Number.isNaN(amt) &&
+    Number.isFinite(amt) &&
     amt > 0 &&
-    paidBy &&
-    splitBetween.length > 0;
+    memberIds.includes(paidBy) &&
+    selected.length > 0;
 
   const perPerson = useMemo(
     () => (valid ? amt / splitBetween.length : 0),
