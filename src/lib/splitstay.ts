@@ -117,6 +117,30 @@ export function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+/**
+ * Cleans anything a user can type into a money field: strips ₹, commas, spaces
+ * and letters, keeps a single decimal point and at most two decimals.
+ */
+export function sanitizeMoneyInput(raw: string): string {
+  let v = raw.replace(/[^\d.]/g, "");
+  const first = v.indexOf(".");
+  if (first !== -1) {
+    v = v.slice(0, first + 1) + v.slice(first + 1).replace(/\./g, "");
+    const [int, dec = ""] = v.split(".");
+    v = `${int}.${dec.slice(0, 2)}`;
+  }
+  // Drop leading zeros like "007" but keep "0" and "0.5"
+  v = v.replace(/^0+(?=\d)/, "");
+  return v.slice(0, 13);
+}
+
+/** Parses a money field to a number rounded to 2 decimals; NaN when invalid. */
+export function parseMoney(raw: string): number {
+  const v = parseFloat(sanitizeMoneyInput(raw));
+  if (!Number.isFinite(v)) return NaN;
+  return Math.round(v * 100) / 100;
+}
+
 export function formatINR(n: number) {
   const sign = n < 0 ? "-" : "";
   const v = Math.abs(n);
