@@ -69,8 +69,8 @@ export function ExpenseDialog({ open, onOpenChange, group, editing, onSubmit }: 
     selected.length > 0;
 
   const perPerson = useMemo(
-    () => (valid ? amt / splitBetween.length : 0),
-    [valid, amt, splitBetween.length],
+    () => (valid ? amt / selected.length : 0),
+    [valid, amt, selected.length],
   );
 
   const toggleSplit = (id: string, checked: boolean) => {
@@ -83,7 +83,7 @@ export function ExpenseDialog({ open, onOpenChange, group, editing, onSubmit }: 
       description: description.trim(),
       amount: amt,
       paidBy,
-      splitBetween,
+      splitBetween: selected,
       date: new Date(date).toISOString(),
     });
     onOpenChange(false);
@@ -110,13 +110,13 @@ export function ExpenseDialog({ open, onOpenChange, group, editing, onSubmit }: 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="amt">Amount (₹)</Label>
-              <Input
+              <MoneyInput
                 id="amt"
-                type="number"
-                inputMode="decimal"
-                placeholder="0.00"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onValueChange={setAmount}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") submit();
+                }}
               />
             </div>
             <div className="space-y-2">
